@@ -401,7 +401,7 @@ extension RouteMapViewController: RoutePageViewControllerDelegate {
         } else {
             maneuverViewController.streetLabel.text = step?.instructions
         }
-        maneuverViewController.distanceLabel.text = step!.distance > 0 ? distanceFormatter.string(from: step!.distance) : ""
+        maneuverViewController.distanceLabel.text = step!.distance.toKm()
         maneuverViewController.turnArrowView.step = step
         
         if let allLanes = step?.intersections?.first?.approachLanes, let usableLanes = step?.intersections?.first?.usableApproachLanes {

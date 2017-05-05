@@ -20,12 +20,25 @@ class RouteTableViewCell: UITableViewCell {
             
             turnArrowView.step = step
             titleLabel.text = routeStepFormatter.string(for: step)
-            subtitleLabel.text = distanceFormatter.string(from: step.distance)
+            subtitleLabel.text = step.distance.toKm()
         }
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         contentView.alpha = 1
+    }
+}
+
+extension CLLocationDistance {
+    public func toKm() -> String {
+        if self < 0 {
+            return ""
+        }
+        if self > 1000 {
+            return "\(((self / 1000.0) * 10).rounded() / 10) km"
+        } else {
+            return "\(Int(self)) m"
+        }
     }
 }

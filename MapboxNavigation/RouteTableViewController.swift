@@ -22,6 +22,9 @@ class RouteTableViewController: UIViewController {
         dateComponentsFormatter.maximumUnitCount = 2
         dateComponentsFormatter.allowedUnits = [.day, .hour, .minute]
         dateComponentsFormatter.unitsStyle = .short
+        var calendar = Calendar.current
+        calendar.locale = Locale(identifier: "vi")
+        dateComponentsFormatter.calendar = calendar
         headerView.progress = CGFloat(routeController.routeProgress.fractionTraveled)
     }
     
@@ -38,7 +41,7 @@ class RouteTableViewController: UIViewController {
         if routeProgress.durationRemaining < 5 {
             headerView.distanceRemaining.text = nil
         } else {
-            headerView.distanceRemaining.text = distanceFormatter.string(from: routeProgress.distanceRemaining)
+            headerView.distanceRemaining.text = routeProgress.distanceRemaining.toKm()
         }
         
         if routeProgress.durationRemaining < 60 {
