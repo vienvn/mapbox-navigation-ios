@@ -240,6 +240,10 @@ public class NavigationViewController: NavigationPulleyViewController, RouteMapV
         }
     }
     
+    public func updateMarker(annotations: [HPAnnotation2]) {
+        self.mapViewController?.updateMarker(annotations: annotations)
+    }
+    
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         

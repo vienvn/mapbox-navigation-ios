@@ -45,6 +45,8 @@ class RouteMapViewController: UIViewController, PulleyPrimaryContentControllerDe
         return parent.simulatesLocationUpdates
     }
     
+    var annotations: [MGLPointAnnotation] = []
+
     override func viewDidLoad() {
         super.viewDidLoad()
         automaticallyAdjustsScrollViewInsets = false
@@ -223,6 +225,12 @@ class RouteMapViewController: UIViewController, PulleyPrimaryContentControllerDe
             }
         }
     }
+    
+    func updateMarker(annotations: [HPAnnotation2]) {
+        self.mapView.removeAnnotations(self.annotations)
+        self.annotations = annotations
+        self.mapView.addAnnotations(self.annotations)
+    }
 }
 
 // MARK: NavigationMapViewDelegate
@@ -383,6 +391,27 @@ extension RouteMapViewController: MGLMapViewDelegate {
             shieldAPIDataTask?.resume()
         }
     }
+    
+    // Use the default marker. See also: our view annotation or custom marker examples.
+    func mapView(_ mapView: MGLMapView, imageFor annotation: MGLAnnotation) -> MGLAnnotationImage? {
+        if let annotation = annotation as? HPAnnotation2 {
+            var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: annotation.dentifier ?? "opps")
+            
+            if annotationImage == nil {
+                var image = annotation.markerImage!()
+                image = image.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image.size.height / 2, right: 0))
+                annotationImage = MGLAnnotationImage(image: image, reuseIdentifier: annotation.dentifier ?? "opps")
+            }
+            return annotationImage
+        }
+        
+        return nil
+    }
+    
+    // Allow callout view to appear when an annotation is tapped.
+    func mapView(_ mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
+        return true
+    }
 }
 
 // MARK: RouteManeuverPageViewControllerDelegate
@@ -446,4 +475,9 @@ protocol RouteMapViewControllerDelegate: class {
     func navigationMapView(_ mapView: NavigationMapView, routeCasingStyleLayerWithIdentifier identifier: String, source: MGLSource) -> MGLStyleLayer?
     func navigationMapView(_ mapView: NavigationMapView, shapeDescribing route: Route) -> MGLShape?
     func navigationMapView(_ mapView: NavigationMapView, simplifiedShapeDescribing route: Route) -> MGLShape?
+}
+
+open class HPAnnotation2: MGLPointAnnotation {
+    public var dentifier: String?
+    public var markerImage: (() -> UIImage)?
 }
